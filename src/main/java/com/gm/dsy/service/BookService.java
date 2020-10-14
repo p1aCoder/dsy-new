@@ -36,5 +36,9 @@ public class BookService {
         bookDAO.deleteById(id);
     }
 
+    public List<Book> searchBook(String keywords){
+        return bookDAO.findAllByTitleLikeOrAuthorLike('%' + keywords + '%', '%' + keywords + '%');
+    }
+
 
 }

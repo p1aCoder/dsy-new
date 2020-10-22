@@ -1,8 +1,9 @@
 package com.gm.dsy;
 
+import org.apache.shiro.crypto.SecureRandomNumberGenerator;
+
 public class test {
     public static void main(String[] args) {
-        String name="admin";
-        System.out.println("admin".equals(name));
+        System.out.println(new SecureRandomNumberGenerator().nextBytes());
     }
 }

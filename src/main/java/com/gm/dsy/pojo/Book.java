@@ -21,6 +21,24 @@ public class Book {
     String date;
     String press;
     String abs;
+    float rate;
+    int rateNum;
+
+    public float getRate() {
+        return rate;
+    }
+
+    public void setRate(float rate) {
+        this.rate = rate;
+    }
+
+    public int getRateNum() {
+        return rateNum;
+    }
+
+    public void setRateNum(int rateNum) {
+        this.rateNum = rateNum;
+    }
 
     public int getId() {
         return id;

@@ -1,6 +1,11 @@
 package com.gm.dsy.controller;
 
+import com.gm.dsy.dao.BookDAO;
+import com.gm.dsy.dao.CategoryDAO;
 import com.gm.dsy.pojo.Book;
+import com.gm.dsy.pojo.Category;
+import com.gm.dsy.result.Result;
+import com.gm.dsy.result.ResultFactory;
 import com.gm.dsy.service.BookService;
 import com.gm.dsy.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +20,10 @@ import java.util.List;
 public class LibraryController {
     @Autowired
     BookService bookService;
+    @Autowired
+    BookDAO bookDAO;
+    @Autowired
+    CategoryDAO categoryDAO;
 
     @CrossOrigin
     @GetMapping("/api/book")
@@ -25,6 +34,8 @@ public class LibraryController {
     @CrossOrigin
     @PostMapping("/api/book")
     public Book addOrUpdate(@RequestBody Book book) throws Exception{
+        Category category=categoryDAO.findByName(book.getCategory().getName());
+        book.setCategory(category);
         bookService.addOrUpdate(book);
         return book;
     }
@@ -45,6 +56,22 @@ public class LibraryController {
     @GetMapping("/api/search")
     public List<Book> listByCategory(@RequestParam("keywords") String keywords) throws Exception{
         return keywords.equals("")?bookService.listAll():bookService.searchBook(keywords);
+    }
+
+    @PostMapping("/api/rate")
+    public Result rate(@RequestBody Book requestBook) throws Exception{
+        Book book=bookDAO.findById(requestBook.getId()).orElse(null);
+        if (book != null) {
+            int times=book.getRateNum()+1;
+            float rate=(book.getRate()*book.getRateNum()+requestBook.getRate())/times;
+            book.setRateNum(times);
+            book.setRate(rate);
+            bookService.addOrUpdate(book);
+            return ResultFactory.buildSuccessResult("评分成功");
+        }else {
+            return ResultFactory.buildFailureResult("评分失败");
+        }
+
     }
 
     @PostMapping("/api/covers")
